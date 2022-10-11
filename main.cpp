@@ -282,9 +282,9 @@ int main() {
             cout << "|\tCALCULATOR HISTORY\t\t|" << endl;
             cout << "+---------------------------------------+" << endl;
             cout << "| => 1. Show history list\t\t|" << endl;
-            cout << "| => 2. Pick a history to delete\t|" << endl;
-            cout << "| => 3. Delete whole history\t\t|" << endl;
-            cout << "| => 0. Back to main menu\t\t|" << endl;
+            cout << "| => 2. Choose a history to delete\t|" << endl;
+            cout << "| => 3. Clear all the history\t\t|" << endl;
+            cout << "| => 0. Go back to main menu\t\t|" << endl;
             cout << "+---------------------------------------+" << endl;
             int option;
             cout << "Input your option: ";
