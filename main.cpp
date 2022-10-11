@@ -364,7 +364,7 @@ int main(){
                             cout << "All history successfully deleted" << endl;
                             break;
                         }
-                        case 'n': cout << "History deletion cancelled" << endl; 
+                        case 'n': cout << "Delete History Cancelled" << endl; 
                         break;
                 }
                 cout << endl;
