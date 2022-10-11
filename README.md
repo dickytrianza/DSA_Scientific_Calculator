@@ -4,7 +4,8 @@
 1. Ahmad Nurfais
 2. Dicky Aditrianza
 3. Irfan Yuliana Putra
-4. Noorfi Azizah Rahim
+4. James Jordan Tanasyah
+5. Noorfi Azizah Rahim
 
 ## Rules and Specification 
 1. [ ]The calculator should have + - / :   (10 points)
