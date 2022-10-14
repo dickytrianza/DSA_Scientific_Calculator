@@ -8,7 +8,7 @@
 5. Noorfi Azizah Rahim
 
 ## Rules and Specification 
-- [ ]The calculator should have + - / :   (10 points)
+[ ]The calculator should have + - / :   (10 points)
 - [ ]Basic trigonometry function: sin cos tan (10 points)
 - [ ]More than basic function: square root, exp, log, ln (15 points)
 - [ ]The calculator can input up to 10 or more variables and parameters. It is not limited to 2 + 2, 3 x 3, etc. (15 points)
