@@ -39,14 +39,18 @@ int precedenceOperator(char op) {
 }
 
 // Erase the count lines
-void erase(int count) {
+void eraseLines(int count) {
     count++;
+
     if (count > 0) {
         cout << "\x1b[2K"; 
 
         for (int i = 1; i < count; i++) {
-            cout << "\x1b[1A" << "\x1b[2K"; 
+            cout
+            << "\x1b[1A" 
+            << "\x1b[2K"; 
         }
+
         cout << "\r"; 
     }
 }
@@ -55,122 +59,167 @@ void eraseWarning(string input) {
     cout << "\x1b[1A" << "\x1b[2K";
     cout << "\x1b[1A" << "\x1b[2K";
     cout << "\x1b[1A" << "\x1b[2K";
-    cout << "\nInput the equation:";
+
+    cout << "\nEnter an expression:" << endl;
     cout << input << endl;
+    
     cout << "\r";
 }
 
 float inputResult(string input, Vals* valsHead, Vals* valsTail, Ops* opsHead, Ops* opsTail) {
-    bool lastDigit = false;
+    bool lastIsDigit = false;
 
     for(int i = 0; i < input.length(); i++) {
+        
         if(input[i] == ' ') {
             continue;
-        } else if(input[i] == '(') {
+        }
+        
+        else if(input[i] == '(') {
             opsHead->pushTail(&opsHead, &opsTail, input[i]);
-            lastDigit = false;
-        } else if(isalpha(input[i])) { //Push trigonometry function to ops list
-            lastDigit = false;
+            lastIsDigit = false;
+        }
+
+     
+        else if(isalpha(input[i])) {
+            lastIsDigit = false;
+
             if(input[i] == 's') {
+              
                 if(i < input.length() - 2 && input[i + 1] == 'i' && input[i + 2] == 'n') {
                     opsHead->pushTail(&opsHead, &opsTail, 's');
                     i += 2;
-                } else if(i < input.length() - 3 && input[i + 1] == 'q' && input[i + 2] == 'r' && input[i + 3] == 't') {
+                }
+                else if(i < input.length() - 3 && input[i + 1] == 'q' && input[i + 2] == 'r' && input[i + 3] == 't') {
                     opsHead->pushTail(&opsHead, &opsTail, 'q');
                     i += 3;
-                } else if(i < input.length() - 2 && input[i] == 'c' && input[i + 1] == 'o' && input[i + 2] == 's') {
-                    opsHead->pushTail(&opsHead, &opsTail, 'c');
-                    i += 2;
-                } else if(i < input.length() - 2 && input[i] == 't' && input[i + 1] == 'a' && input[i + 2] == 'n') {
-                    opsHead->pushTail(&opsHead, &opsTail, 't');
-                    i += 2;
-                } else if(input[i] == 'l') {
-                    if(i < input.length() - 2 && input[i + 1] == 'o' && input[i + 2] == 'g') {
-                        opsHead->pushTail(&opsHead, &opsTail, 'l');
-                        i += 2;
-                    } else if(i < input.length() - 1 && input[i + 1] == 'n') {
-                        opsHead->pushTail(&opsHead, &opsTail, 'e');
-                        i++;
-                    } else {
-                        return NAN;
-                    }  
                 }
-            } 
+               
+                else return NAN;
+            }
+
+            else if(i < input.length() - 2 && input[i] == 'c' && input[i + 1] == 'o' && input[i + 2] == 's') {
+                opsHead->pushTail(&opsHead, &opsTail, 'c');
+                i += 2;
+            }
+
+            else if(i < input.length() - 2 && input[i] == 't' && input[i + 1] == 'a' && input[i + 2] == 'n') {
+                opsHead->pushTail(&opsHead, &opsTail, 't');
+                i += 2;
+            }
+
+            else if(input[i] == 'l') {
+                if(i < input.length() - 2 && input[i + 1] == 'o' && input[i + 2] == 'g') {
+                    opsHead->pushTail(&opsHead, &opsTail, 'l');
+                    i += 2;
+                }
+
+                else if(i < input.length() - 1 && input[i + 1] == 'n') {
+                    opsHead->pushTail(&opsHead, &opsTail, 'e');
+                    i++;
+                }
+                else return NAN;
+            }
+
+            else return NAN;
         }
 
         // Push Number Value to list
         else if(isdigit(input[i])) {
             float temp = 0;
+
             while(i < input.length() && isdigit(input[i])) {
                 temp = (temp * 10) + (input[i] - '0');
                 i++;
             }
             i--;
-            // Check Unary Operators
-            if(!lastDigit && (opsHead != NULL || valsHead != NULL)) {
+
+             // Check Unary Operators
+            if(!lastIsDigit && (opsHead != NULL || valsHead != NULL)) {
                 if(opsTail->data == '+') {
                     opsHead->deleteTail(&opsHead, &opsTail);
                     valsHead->pushTail(&valsHead, &valsTail, temp);
-                } else if(opsTail->data == '-') {
+                }
+                else if(opsTail->data == '-') {
                     opsHead->deleteTail(&opsHead, &opsTail);
                     valsHead->pushTail(&valsHead, &valsTail, (-1) * temp);
-                } else valsHead->pushTail(&valsHead, &valsTail, temp);
-            } else {
-                valsHead->pushTail(&valsHead, &valsTail, temp);
+                }
+                else valsHead->pushTail(&valsHead, &valsTail, temp);
             }
-            lastDigit = true;
+
+            else valsHead->pushTail(&valsHead, &valsTail, temp);
+            
+            lastIsDigit = true;
         }
 
-        //Calculate the paranthesis
+       //Calculate the paranthesis
         else if(input[i] == ')') {
             while(opsHead != NULL && opsTail->data != '(') {
                 char tailOp = opsTail->data;
+
                 if(valsHead == NULL || ((tailOp == '+' || tailOp == '-' || tailOp == '*' || tailOp == '/' || tailOp == '^') && valsHead->next == NULL)) {
                     return NAN;
-                } else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
+                }
+
+                else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
                     float x = valsTail->data;
                     valsHead->deleteTail(&valsHead, &valsTail);
+
                     char op = opsTail->data;
                     opsHead->deleteTail(&opsHead, &opsTail);
+
                     float result = trigOperator(x, op);
                     valsHead->pushTail(&valsHead, &valsTail, result);
-                } else {
+                }
+
+                else {
                     float b = valsTail->data;
                     valsHead->deleteTail(&valsHead, &valsTail);
+
                     float a = valsTail->data;
                     valsHead->deleteTail(&valsHead, &valsTail);
+
                     char op = opsTail->data;
                     opsHead->deleteTail(&opsHead, &opsTail);
+
                     float result = basicOperator(a, b, op);
                     valsHead->pushTail(&valsHead, &valsTail, result);
                 }
             }
+
             if(opsHead != NULL) opsHead->deleteTail(&opsHead, &opsTail);
         }
         
-        // Push operators to ops list 
-        // and Calculate the previous ops precedence if it is lower or equal
         else {
-            if(opsHead != NULL && lastDigit) {
+            if(opsHead != NULL && lastIsDigit) {
                 while(opsHead != NULL && precedenceOperator(input[i]) <= precedenceOperator(opsTail->data)) {
                     char tailOp = opsTail->data;
 
                     if(valsHead == NULL || ((tailOp == '+' || tailOp == '-' || tailOp == '*' || tailOp == '/' || tailOp == '^') && valsHead->next == NULL)) {
                         return NAN;
-                    } else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
+                    }
+
+                    else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
                         float x = valsTail->data;
                         valsHead->deleteTail(&valsHead, &valsTail);
+
                         char op = opsTail->data;
                         opsHead->deleteTail(&opsHead, &opsTail);
+
                         float result = trigOperator(x, op);
                         valsHead->pushTail(&valsHead, &valsTail, result);
-                    } else {
+                    }
+
+                    else {
                         float b = valsTail->data;
                         valsHead->deleteTail(&valsHead, &valsTail);
+
                         float a = valsTail->data;
                         valsHead->deleteTail(&valsHead, &valsTail);
+
                         char op = opsTail->data;
                         opsHead->deleteTail(&opsHead, &opsTail);
+
                         float result = basicOperator(a, b, op);
                         valsHead->pushTail(&valsHead, &valsTail, result);
                     }
@@ -180,40 +229,53 @@ float inputResult(string input, Vals* valsHead, Vals* valsTail, Ops* opsHead, Op
             if(input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '^' ||
                input[i] == 's' || input[i] == 'c' || input[i] == 't' || input[i] == 'q' || input[i] == 'l' || input[i] == 'e') {
                 if(input[i] != '+' && input[i] != '-') {
-                    lastDigit = false;
+                    lastIsDigit = false;
                 }
+
                 opsHead->pushTail(&opsHead, &opsTail, input[i]);
-            } else {
-                return NAN;
-            } 
+            }
+               
+            else return NAN; 
         }
     }
-    // Calculate the remaining operations
+
     while(opsHead != NULL) {
         char tailOp = opsTail->data;
+
         if(valsHead == NULL || ((tailOp == '+' || tailOp == '-' || tailOp == '*' || tailOp == '/' || tailOp == '^') && valsHead->next == NULL)) {
             return NAN;
-        } else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
+        }
+
+        else if(tailOp == 's' || tailOp == 'c' || tailOp == 't' || tailOp == 'q' || tailOp == 'l' || tailOp == 'e') {
             float x = valsTail->data;
             valsHead->deleteTail(&valsHead, &valsTail);
+
             char op = opsTail->data;
             opsHead->deleteTail(&opsHead, &opsTail);
+
             float result = trigOperator(x, op);
             valsHead->pushTail(&valsHead, &valsTail, result);
-        } else {
+        }
+
+        else {
             float b = valsTail->data;
             valsHead->deleteTail(&valsHead, &valsTail);
+
             float a = valsTail->data;
             valsHead->deleteTail(&valsHead, &valsTail);
+
             char op = opsTail->data;
             opsHead->deleteTail(&opsHead, &opsTail);
+
             float result = basicOperator(a, b, op);
             valsHead->pushTail(&valsHead, &valsTail, result);
         }
     }
-    return valsTail->data; 
+
+    return valsTail->data; //return final result
 }
 
+//FUNCTION FOR MAIN MENU
 // Main Menu
 int mainMenu() {
     int menu;
@@ -261,7 +323,7 @@ int main() {
 
                 if(isnan(result)) {
                     if(error == 0) error++;
-                    erase(3);
+                    eraseLines(3);
                     cout << "Warning::Invalid equation!" << endl;
                 } else {
                     if(error > 0) {
@@ -276,7 +338,7 @@ int main() {
             }
         }
 
-        //HISTORY MENU
+//HISTORY MENU
         else if(menu == 2) {
             cout << "+---------------------------------------+" << endl;
             cout << "|\tCALCULATOR HISTORY\t\t|" << endl;
@@ -320,3 +382,4 @@ int main() {
     exit(0);
     return 0;
 }
+
